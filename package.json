@@ -1,0 +1,12 @@
+{
+  "name": "clinic-app",
+  "version": "1.0.0",
+  "devDependencies": {
+    "concurrently": "^9.2.1",
+    "kill-port": "^2.0.1"
+  },
+  "scripts": {
+    "stop:ports": "kill-port 5000 5173 5174 5175",
+    "start:all": "npm run stop:ports && concurrently \"npm run dev --prefix backend\" \"npm run dev --prefix frontend\""
+  }
+}
