@@ -1,0 +1,299 @@
+{
+  "info": {
+    "_postman_id": "dentalapp-api-tests-2026",
+    "name": "DentalApp API Tests",
+    "description": "API test collection for DentalApp (ClinicApp) coursework — minimum 5 test cases with automated assertions.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000/api"
+    },
+    {
+      "key": "accessToken",
+      "value": ""
+    }
+  ],
+  "item": [
+    {
+      "name": "API-01 Health Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/health"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status is 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "pm.test('Status ok in body', function () {",
+              "    const json = pm.response.json();",
+              "    pm.expect(json.status).to.eql('ok');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "API-02 Login Valid Admin",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"admin@clinic.com\",\n  \"password\": \"Admin@123\"\n}"
+        },
+        "url": "{{baseUrl}}/auth/login"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status is 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "pm.test('Access token returned', function () {",
+              "    const json = pm.response.json();",
+              "    pm.expect(json.accessToken).to.be.a('string');",
+              "    pm.collectionVariables.set('accessToken', json.accessToken);",
+              "});",
+              "pm.test('User role is admin', function () {",
+              "    pm.expect(pm.response.json().user.role).to.eql('admin');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "API-03 Login Invalid Password",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"admin@clinic.com\",\n  \"password\": \"WrongPassword123\"\n}"
+        },
+        "url": "{{baseUrl}}/auth/login"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status is 401', function () {",
+              "    pm.response.to.have.status(401);",
+              "});",
+              "pm.test('Invalid credentials message', function () {",
+              "    pm.expect(pm.response.json().message).to.include('Invalid credentials');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "API-04 Get Patients Without Token",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": "{{baseUrl}}/patients"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status is 401', function () {",
+              "    pm.response.to.have.status(401);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "API-05 Get Patients With Token",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{accessToken}}"
+          }
+        ],
+        "url": "{{baseUrl}}/patients"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status is 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "pm.test('Response is array', function () {",
+              "    pm.expect(pm.response.json()).to.be.an('array');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "API-06 Create Patient (Admin)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{accessToken}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"fullName\": \"Postman Test Patient\",\n  \"phone\": \"555-7777\",\n  \"email\": \"postman.patient@test.com\",\n  \"notes\": \"Created via Postman API-06\"\n}"
+        },
+        "url": "{{baseUrl}}/patients"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status is 201', function () {",
+              "    pm.response.to.have.status(201);",
+              "});",
+              "pm.test('Patient has id and fullName', function () {",
+              "    const json = pm.response.json();",
+              "    pm.expect(json.id).to.be.a('number');",
+              "    pm.expect(json.fullName).to.eql('Postman Test Patient');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "API-07 Create Appointment Patient Not Found",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{accessToken}}"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"patientId\": 99999,\n  \"doctorId\": 1,\n  \"appointmentDate\": \"2026-06-15T10:00:00.000Z\",\n  \"reason\": \"API negative test\",\n  \"status\": \"scheduled\"\n}"
+        },
+        "url": "{{baseUrl}}/appointments"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status is 404', function () {",
+              "    pm.response.to.have.status(404);",
+              "});",
+              "pm.test('Patient not found message', function () {",
+              "    pm.expect(pm.response.json().message).to.include('Patient not found');",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "API-08a Staff Login",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"email\": \"staff@clinic.com\",\n  \"password\": \"Staff@123\"\n}"
+        },
+        "url": "{{baseUrl}}/auth/login"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Staff login 200', function () {",
+              "    pm.response.to.have.status(200);",
+              "});",
+              "pm.collectionVariables.set('staffToken', pm.response.json().accessToken);"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    },
+    {
+      "name": "API-08 Staff Forbidden Audit Logs",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{staffToken}}"
+          }
+        ],
+        "url": "{{baseUrl}}/audit-logs"
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "pm.test('Status is 403', function () {",
+              "    pm.response.to.have.status(403);",
+              "});"
+            ],
+            "type": "text/javascript"
+          }
+        }
+      ]
+    }
+  ]
+}

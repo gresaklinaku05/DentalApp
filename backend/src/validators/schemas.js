@@ -45,6 +45,63 @@ const patientHistorySchema = Joi.object({
   notes: Joi.string().allow("", null),
 });
 
+const schoolSchema = Joi.object({
+  schoolName: Joi.string().required(),
+  city: Joi.string().required(),
+});
+
+const studentSchema = Joi.object({
+  studentName: Joi.string().required(),
+  class: Joi.string().required(),
+  schoolId: Joi.number().integer().required(),
+});
+
+const factorySchema = Joi.object({
+  factoryName: Joi.string().required(),
+  location: Joi.string().required(),
+});
+
+const workerSchema = Joi.object({
+  firstName: Joi.string().required(),
+  lastName: Joi.string().required(),
+  position: Joi.string().required(),
+  factoryId: Joi.number().integer().required(),
+});
+
+const lecturerSchema = Joi.object({
+  lecturerName: Joi.string().required(),
+  department: Joi.string().required(),
+  email: Joi.string().email().required(),
+});
+
+const lectureSchema = Joi.object({
+  lectureName: Joi.string().required(),
+  lecturerId: Joi.number().integer().required(),
+});
+
+const librarySchema = Joi.object({
+  libraryName: Joi.string().required(),
+  address: Joi.string().required(),
+});
+
+const bookSchema = Joi.object({
+  bookName: Joi.string().required(),
+  author: Joi.string().required(),
+  isbn: Joi.string().required(),
+  libraryId: Joi.number().integer().required(),
+});
+
+const postimiSchema = Joi.object({
+  title: Joi.string().required(),
+  content: Joi.string().required(),
+  autherName: Joi.string().required(),
+});
+
+const komentiSchema = Joi.object({
+  text: Joi.string().required(),
+  postimiId: Joi.number().integer().required(),
+});
+
 module.exports = {
   registerSchema,
   loginSchema,
@@ -52,4 +109,14 @@ module.exports = {
   doctorSchema,
   appointmentSchema,
   patientHistorySchema,
+  schoolSchema,
+  studentSchema,
+  factorySchema,
+  workerSchema,
+  lecturerSchema,
+  lectureSchema,
+  librarySchema,
+  bookSchema,
+  postimiSchema,
+  komentiSchema,
 };

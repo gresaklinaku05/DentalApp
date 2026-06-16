@@ -950,12 +950,15 @@ npm run stop:ports
 
 ### 7.4 Default Test Credentials
 
-After seeding, test with:
-```
-Email: admin@clinic.com
-Password: password123
-Role: admin
-```
+After seeding (`npm run seed`), test with:
+
+| Role | Email | Password |
+|------|-------|----------|
+| Admin | admin@clinic.com | Admin@123 |
+| Doctor | doctor@clinic.com | Doctor@123 |
+| Staff | staff@clinic.com | Staff@123 |
+
+For **Test Strategy, API Testing (Postman), and Bug Reports**, see [TESTING_DOCUMENTATION.md](TESTING_DOCUMENTATION.md).
 
 ### 7.5 Building for Production
 

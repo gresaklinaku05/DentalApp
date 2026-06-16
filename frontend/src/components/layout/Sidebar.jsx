@@ -6,6 +6,11 @@ const links = [
   { to: "/patients", label: "Patients" },
   { to: "/appointments", label: "Appointments" },
   { to: "/doctors", label: "Doctors", roles: ["admin"] },
+  { to: "/schools", label: "Schools & Students" },
+  { to: "/factories", label: "Factories & Workers" },
+  { to: "/lecturers", label: "Lecturers & Lectures" },
+  { to: "/libraries", label: "Libraries & Books" },
+  { to: "/postimis", label: "Postimi & Komenti" },
   { to: "/audit-logs", label: "Audit Logs", roles: ["admin"] },
 ];
 
